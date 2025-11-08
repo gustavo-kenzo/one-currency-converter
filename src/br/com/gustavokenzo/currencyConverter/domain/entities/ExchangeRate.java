@@ -1,16 +1,22 @@
 package br.com.gustavokenzo.currencyConverter.domain.entities;
 
 public class ExchangeRate {
-    private String exchangeCode;
+    private String baseCurrency;
+    private String targetCurrency;
     private Double exchangeValue;
 
-    public ExchangeRate(String exchangeCode, Double exchangeValue) {
-        this.exchangeCode = exchangeCode;
+    public ExchangeRate(String baseCurrency, String targeCurrency, Double exchangeValue) {
+        this.baseCurrency = baseCurrency;
+        this.targetCurrency = targeCurrency;
         this.exchangeValue = exchangeValue;
     }
 
-    public String getExchangeCode() {
-        return exchangeCode;
+    public String getBaseCurrency() {
+        return baseCurrency;
+    }
+
+    public String getTargeCurrency() {
+        return targetCurrency;
     }
 
     public Double getExchangeValue() {
@@ -19,6 +25,6 @@ public class ExchangeRate {
 
     @Override
     public String toString() {
-        return exchangeCode + " | " + exchangeValue + "\n";
+        return baseCurrency+" | "+targetCurrency + " | " + exchangeValue + "\n";
     }
 }
