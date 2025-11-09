@@ -5,27 +5,31 @@ import br.com.gustavokenzo.currencyConverter.infra.dto.ExchangeRateDTO;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.io.IOException;
+import com.google.gson.JsonSyntaxException;
 
 public class ExchangeRateMapper {
     private final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
     //Mapping the request to the DTO ExchangeRateDTO.
     private ExchangeRateDTO getDTO(String json) {
-        ExchangeRateDTO exchangeDTO = gson.fromJson(json, ExchangeRateDTO.class);
-        return exchangeDTO;
+        try {
+            ExchangeRateDTO exchangeDTO = gson.fromJson(json, ExchangeRateDTO.class);
+            return exchangeDTO;
+        } catch (JsonSyntaxException e) {
+            throw new RuntimeException("Invalid JSON received from the API" + e.getMessage());
+        }
     }
 
     //Mapping the DTO to entity ExchangeRate
-    public ExchangeRate getExchange(String json) throws IOException, InterruptedException {
-        if (json == null || json.trim().isEmpty()) {
-            throw new IllegalArgumentException("JSON não pode ser vazio");
-        }
+    public ExchangeRate getExchange(String json) {
+        if (json == null || json.isBlank())
+            throw new IllegalArgumentException("JSON can't be empty");
+
         ExchangeRateDTO dto = getDTO(json);
-        if (dto.conversionRate() == null || dto.conversionRate() <= 0) {
-            throw new RuntimeException("Taxa de conversão inválida na resposta");
-        }
+
+        if (dto.conversionRate() == null || dto.conversionRate() <= 0)
+            throw new RuntimeException("Invalid conversion rate in the response");
+
         ExchangeRate exchangeRate = new ExchangeRate(dto.baseCode(), dto.targetCode(), dto.conversionRate());
         return exchangeRate;
     }
