@@ -1,6 +1,7 @@
 package br.com.gustavokenzo.currencyConverter.infra.services;
 
 import br.com.gustavokenzo.currencyConverter.domain.entities.ExchangeRate;
+import br.com.gustavokenzo.currencyConverter.domain.exceptions.ExchangeRateApiException;
 import br.com.gustavokenzo.currencyConverter.infra.dto.ExchangeRateDTO;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -16,7 +17,7 @@ public class ExchangeRateMapper {
             ExchangeRateDTO exchangeDTO = gson.fromJson(json, ExchangeRateDTO.class);
             return exchangeDTO;
         } catch (JsonSyntaxException e) {
-            throw new RuntimeException("Invalid JSON received from the API" + e.getMessage());
+            throw new ExchangeRateApiException("Invalid JSON received from the API" + e.getMessage(), "The API response format may have changed");
         }
     }
 
@@ -28,7 +29,7 @@ public class ExchangeRateMapper {
         ExchangeRateDTO dto = getDTO(json);
 
         if (dto.conversionRate() == null || dto.conversionRate() <= 0)
-            throw new RuntimeException("Invalid conversion rate in the response");
+            throw new ExchangeRateApiException("Invalid conversion rate in the response","The API may have returned invalid data.");
 
         ExchangeRate exchangeRate = new ExchangeRate(dto.baseCode(), dto.targetCode(), dto.conversionRate());
         return exchangeRate;

@@ -7,11 +7,11 @@ public class ExchangeRate {
 
     public ExchangeRate(String baseCurrency, String targetCurrency, Double exchangeValue) {
         if (baseCurrency == null || baseCurrency.isBlank())
-            throw new RuntimeException("Base currency can't be empty");
+            throw new IllegalArgumentException("Base currency can't be empty");
         if (targetCurrency == null || targetCurrency.isBlank())
-            throw new RuntimeException("Target currency can't be empty");
+            throw new IllegalArgumentException("Target currency can't be empty");
         if (exchangeValue == null || exchangeValue <= 0)
-            throw new RuntimeException("Exchange rate should be positive");
+            throw new IllegalArgumentException("Exchange rate should be positive");
 
         this.baseCurrency = baseCurrency;
         this.targetCurrency = targetCurrency;

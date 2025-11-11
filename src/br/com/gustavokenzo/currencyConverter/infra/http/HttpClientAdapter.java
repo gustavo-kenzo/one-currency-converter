@@ -11,7 +11,7 @@ public class HttpClientAdapter {
 
     public String get(String url) throws IOException, InterruptedException {
         if (url == null || url.isBlank())
-            throw new RuntimeException("URL can't be empty");
+            throw new IllegalArgumentException("URL can't be empty");
 
         HttpRequest request = HttpRequest.newBuilder(URI.create(url))
                 .GET()
@@ -19,7 +19,7 @@ public class HttpClientAdapter {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200)
-            throw new RuntimeException("HTTP " + response.statusCode() + ": " + response.body());
+            throw new IOException("HTTP " + response.statusCode() + ": " + response.body());
 
         return response.body();
 
